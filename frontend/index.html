@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Trương Hùng — Full-Stack Developer Portfolio</title>
+  <meta name="description" content="Interactive 3D portfolio journey of Trương Hùng. Full-Stack Developer with Java Spring Boot, MySQL and modern front-end." />
+  <meta name="theme-color" content="#050510" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Trương Hùng — Full-Stack Developer" />
+  <meta property="og:description" content="Interactive journey portfolio with 3D WebGL, Spring Boot backend and MySQL database." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://example.com/" />
+
+  <!-- Favicon (optional) -->
+  <link rel="icon" href="data:," />
+
+  <!-- External libraries (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r158/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js" type="module"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollSmoother.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/lib/typed.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/bundled/lenis.min.js"></script>
+
+  <script>
+    // Avoid mixed content warnings in local testing.
+    window.__PORTFOLIO_CONFIG__ = {
+      apiBaseUrl: '',
+      neon: {
+        primary: '#00f5ff',
+        secondary: '#bf00ff',
+        accent: '#ff6b00'
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/animations.css" />
+  <link rel="stylesheet" href="./css/particles.css" />
+  <link rel="stylesheet" href="./css/responsive.css" />
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen" aria-hidden="false">
+    <canvas class="loading-screen__canvas" id="loadingCanvas"></canvas>
+    <div class="loading-screen__content">
+      <div class="loading-screen__logo" aria-label="TH loading">
+        <span class="loading-screen__logo-text">TH</span>
+      </div>
+      <div class="loading-screen__progress">
+        <div class="loading-screen__progress-bar" id="loadingProgressBar"></div>
+      </div>
+      <div class="loading-screen__quote" id="loadingQuote">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Custom 3D cursor (Three.js based) -->
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+  <!-- Scroll progress -->
+  <div class="scroll-progress" aria-hidden="true">
+    <div class="scroll-progress__bar" id="scrollProgressBar"></div>
+  </div>
+  <div class="scroll-indicator" aria-hidden="true"></div>
+
+  <!-- Film grain overlay -->
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- Top nav -->
+  <header class="site-header" data-aos="fade-down">
+    <div class="site-header__inner">
+      <a class="site-header__brand" href="#hero">Trương Hùng</a>
+      <nav class="site-header__nav" aria-label="Primary">
+        <a class="site-header__link" href="#about">About</a>
+        <a class="site-header__link" href="#skills">Skills</a>
+        <a class="site-header__link" href="#projects">Projects</a>
+        <a class="site-header__link" href="#experience">Experience</a>
+        <a class="site-header__link" href="#contact">Contact</a>
+      </nav>
+      <button class="site-header__cta" id="exploreBtn" type="button">Explore</button>
+    </div>
+  </header>
+
+  <!-- 3D background canvas -->
+  <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- MAIN -->
+  <main class="page">
+    <!-- SECTION 1: HERO -->
+    <section class="section section--hero" id="hero" aria-label="Hero">
+      <div class="section__content">
+        <div class="hero" data-aos="zoom-in" data-aos-delay="100">
+          <div class="hero__kicker">Welcome to my universe</div>
+          <h1 class="hero__title">
+            <span class="hero__name" id="typedName">Trương Hùng</span>
+          </h1>
+          <div class="hero__subtitle">
+            <span class="hero__typed" id="typedRole"></span>
+            <span class="hero__cursor" aria-hidden="true">|</span>
+          </div>
+          <p class="hero__description">
+            Full-Stack Developer crafting interactive experiences with Java Spring Boot, MySQL, and modern front-end 3D.
+          </p>
+
+          <div class="hero__cta-row">
+            <a class="btn btn--primary" href="#about" id="exploreUniverseBtn">Explore My Universe</a>
+            <a class="btn btn--ghost" href="#projects">View Projects</a>
+          </div>
+
+          <div class="hero__meta">
+            <div class="hero__meta-item">
+              <div class="hero__meta-label">Focus</div>
+              <div class="hero__meta-value">Java • Spring Boot • WebGL</div>
+            </div>
+            <div class="hero__meta-item">
+              <div class="hero__meta-label">Location</div>
+              <div class="hero__meta-value">Vietnam</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio visualizer -->
+        <div class="audio-visualizer" aria-hidden="true">
+          <canvas id="audioVizCanvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ABOUT -->
+    <section class="section section--about" id="about" aria-label="About">
+      <div class="section__header" data-aos="fade-up">
+        <h2 class="section__title">About Me</h2>
+        <p class="section__subtitle">Hologram vibes. Real engineering behind the glow.</p>
+      </div>
+
+      <div class="about" data-aos="fade-up" data-aos-delay="100">
+        <div class="about__grid">
+          <div class="about__holo-card" id="holoCard" aria-label="Hologram card">
+            <div class="about__avatar-wrap">
+              <div class="about__avatar" aria-hidden="true"></div>
+              <div class="about__glitch" aria-hidden="true"></div>
+              <div class="about__icons orbit" aria-hidden="true">
+                <span class="orbit__icon orbit__icon--1"></span>
+                <span class="orbit__icon orbit__icon--2"></span>
+                <span class="orbit__icon orbit__icon--3"></span>
+                <span class="orbit__icon orbit__icon--4"></span>
+                <span class="orbit__icon orbit__icon--5"></span>
+              </div>
+            </div>
+
+            <div class="about__holo-text">
+              <div class="neon-line">Hi, I'm Trương Hùng 👋</div>
+              <p class="about__paragraph">
+                I build scalable backends, clean APIs, and UI experiences that feel alive.
+                I love systems thinking—from design patterns to performance.
+              </p>
+            </div>
+          </div>
+
+          <div class="about__timeline" aria-label="Timeline">
+            <ol class="timeline">
+              <li class="timeline__item" data-aos="fade-right">
+                <div class="timeline__dot"></div>
+                <div class="timeline__content">
+                  <h3 class="timeline__title">2019 — Kickoff</h3>
+                  <p class="timeline__desc">Learning Java + building small full-stack apps.</p>
+                </div>
+              </li>
+              <li class="timeline__item" data-aos="fade-right" data-aos-delay="80">
+                <div class="timeline__dot"></div>
+                <div class="timeline__content">
+                  <h3 class="timeline__title">2021 — Spring Boot</h3>
+                  <p class="timeline__desc">APIs, JPA/Hibernate, WebSocket, caching.</p>
+                </div>
+              </li>
+              <li class="timeline__item" data-aos="fade-right" data-aos-delay="160">
+                <div class="timeline__dot"></div>
+                <div class="timeline__content">
+                  <h3 class="timeline__title">2023 — 3D UI</h3>
+                  <p class="timeline__desc">Three.js, WebGL shaders, smooth scroll journeys.</p>
+                </div>
+              </li>
+              <li class="timeline__item" data-aos="fade-right" data-aos-delay="240">
+                <div class="timeline__dot"></div>
+                <div class="timeline__content">
+                  <h3 class="timeline__title">Now — Full-Stack</h3>
+                  <p class="timeline__desc">Microservices, system design, and production-ready delivery.</p>
+                </div>
+              </li>
+            </ol>
+
+            <div class="about__counters" aria-label="Counters">
+              <div class="counter" data-counter="years">
+                <div class="counter__value" id="counterYears">0</div>
+                <div class="counter__label">Years</div>
+              </div>
+              <div class="counter" data-counter="projects">
+                <div class="counter__value" id="counterProjects">0</div>
+                <div class="counter__label">Projects</div>
+              </div>
+              <div class="counter" data-counter="tech">
+                <div class="counter__value" id="counterTech">0</div>
+                <div class="counter__label">Tech</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <canvas class="about__matrix" id="matrixRain" aria-hidden="true"></canvas>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SKILLS -->
+    <section class="section section--skills" id="skills" aria-label="Skills">
+      <div class="section__header" data-aos="fade-up">
+        <h2 class="section__title">Skills</h2>
+        <p class="section__subtitle">A solar system of capabilities.</p>
+      </div>
+
+      <div class="skills">
+        <div class="skills__scene" aria-hidden="true">
+          <canvas id="skillsCanvas"></canvas>
+        </div>
+
+        <aside class="skills__panel" data-aos="fade-left">
+          <div class="skills__panel-top">
+            <h3 class="skills__panel-title">Skill Radar</h3>
+            <div class="skills__radar-wrap">
+              <canvas id="skillsRadarChart"></canvas>
+            </div>
+          </div>
+
+          <div class="skills__bars" aria-label="Skill categories">
+            <h3 class="skills__panel-title">Category Bars</h3>
+            <div class="bar-list" id="skillsBarList"></div>
+          </div>
+
+          <div class="skills__tooltip" id="skillsTooltip" role="status" aria-live="polite"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- SECTION 4: PROJECTS -->
+    <section class="section section--projects" id="projects" aria-label="Projects">
+      <div class="section__header" data-aos="fade-up">
+        <h2 class="section__title">Projects</h2>
+        <p class="section__subtitle">3D card flips + API-driven details.</p>
+      </div>
+
+      <div class="projects" data-aos="fade-up" data-aos-delay="80">
+        <div class="projects__filterbar" id="projectsFilterBar" aria-label="Project filters">
+          <button class="projects__filterbtn is-active" data-category="All" type="button">All</button>
+          <button class="projects__filterbtn" data-category="Java" type="button">Java</button>
+          <button class="projects__filterbtn" data-category="Web" type="button">Web</button>
+          <button class="projects__filterbtn" data-category="Database" type="button">Database</button>
+          <button class="projects__filterbtn" data-category="Full-Stack" type="button">Full-Stack</button>
+        </div>
+
+        <div class="projects__grid" id="projectsGrid" aria-live="polite"></div>
+        <div class="projects__skeleton" id="projectsSkeleton" aria-hidden="true">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- Project Modal -->
+      <div class="modal" id="projectModal" aria-hidden="true">
+        <div class="modal__overlay" data-close="true"></div>
+        <div class="modal__content" role="dialog" aria-modal="true" aria-label="Project details">
+          <button class="modal__close" type="button" data-close="true" aria-label="Close">✕</button>
+
+          <div class="modal__header">
+            <div class="modal__title" id="projectModalTitle">Project</div>
+            <div class="modal__badges" id="projectModalBadges"></div>
+          </div>
+
+          <div class="modal__body">
+            <div class="modal__left">
+              <div class="modal__video">
+                <div class="video-placeholder">Video demo (placeholder)</div>
+              </div>
+              <div class="modal__stack">
+                <h4 class="modal__sectionlabel">Tech Stack</h4>
+                <div class="modal__stacklist" id="projectModalTech"></div>
+              </div>
+            </div>
+            <div class="modal__right">
+              <div class="modal__arch">
+                <h4 class="modal__sectionlabel">Architecture Diagram</h4>
+                <div class="arch-diagram-placeholder" aria-hidden="true">SVG diagram (placeholder)</div>
+              </div>
+
+              <div class="modal__links">
+                <a class="btn btn--primary" id="projectModalDemo" href="#" target="_blank" rel="noopener">Live Demo</a>
+                <a class="btn btn--ghost" id="projectModalSource" href="#" target="_blank" rel="noopener">Source Code</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal__description" id="projectModalDescription"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: EXPERIENCE TIMELINE (3D ROAD) -->
+    <section class="section section--experience" id="experience" aria-label="Experience">
+      <div class="section__header" data-aos="fade-up">
+        <h2 class="section__title">Experience Timeline</h2>
+        <p class="section__subtitle">A 3D road with milestone pillars.</p>
+      </div>
+
+      <div class="experience">
+        <canvas id="experienceCanvas" aria-hidden="true"></canvas>
+        <div class="experience__overlay">
+          <div class="experience__card" data-aos="fade-up">
+            <h3 class="experience__card-title">How I work</h3>
+            <p class="experience__card-text">
+              Systems design, clean interfaces, and iterative improvement.
+              I deliver features with performance in mind.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: CONTACT (SPACE STATION) -->
+    <section class="section section--contact" id="contact" aria-label="Contact">
+      <div class="section__header" data-aos="fade-up">
+        <h2 class="section__title">Contact</h2>
+        <p class="section__subtitle">Send a message. Watch the station react.</p>
+      </div>
+
+      <div class="contact" data-aos="fade-up" data-aos-delay="80">
+        <div class="contact__scene" aria-hidden="true">
+          <canvas id="contactCanvas"></canvas>
+        </div>
+
+        <div class="contact__panel">
+          <div class="contact__counter">
+            <span class="contact__counter-label">Visitors</span>
+            <span class="contact__counter-value" id="visitorCount">0</span>
+          </div>
+
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="contact-form__row">
+              <label class="contact-form__label" for="contactName">Name</label>
+              <input class="contact-form__input" id="contactName" name="name" type="text" autocomplete="name" required minlength="2" />
+              <div class="contact-form__error" data-error-for="name"></div>
+            </div>
+
+            <div class="contact-form__row">
+              <label class="contact-form__label" for="contactEmail">Email</label>
+              <input class="contact-form__input" id="contactEmail" name="email" type="email" autocomplete="email" required />
+              <div class="contact-form__error" data-error-for="email"></div>
+            </div>
+
+            <div class="contact-form__row">
+              <label class="contact-form__label" for="contactSubject">Subject</label>
+              <input class="contact-form__input" id="contactSubject" name="subject" type="text" required minlength="3" />
+              <div class="contact-form__error" data-error-for="subject"></div>
+            </div>
+
+            <div class="contact-form__row">
+              <label class="contact-form__label" for="contactMessage">Message</label>
+              <textarea class="contact-form__textarea" id="contactMessage" name="message" rows="6" required minlength="10"></textarea>
+              <div class="contact-form__error" data-error-for="message"></div>
+            </div>
+
+            <div class="contact-form__actions">
+              <button class="btn btn--primary" type="submit" id="contactSubmitBtn">Send Message</button>
+              <div class="contact-form__status" id="contactFormStatus" role="status" aria-live="polite"></div>
+            </div>
+          </form>
+
+          <div class="contact__social" aria-label="Social links">
+            <a class="social-link" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+            <a class="social-link" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="social-link" href="https://www.behance.net/" target="_blank" rel="noopener">Portfolio</a>
+          </div>
+
+          <div class="contact__map" aria-label="Map">
+            <iframe
+              class="contact__map-iframe"
+              title="Map"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?q=Vietnam&output=embed">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" aria-label="Footer">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <div class="footer__made">Made with <span class="footer__heart">❤️</span> + Three.js + Spring Boot</div>
+        </div>
+        <div class="footer__vis">
+          <div class="footer__vis-label">Visitor count</div>
+          <div class="footer__vis-value" id="footerVisitorCount">0</div>
+        </div>
+      </div>
+      <canvas class="footer__matrix" id="footerMatrix" aria-hidden="true"></canvas>
+    </footer>
+  </main>
+
+  <!-- Main module entry -->
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
+

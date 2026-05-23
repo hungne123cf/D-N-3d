@@ -1,0 +1,24 @@
+/*
+  responsive.css
+  - Responsive tweaks for interactive 3D journey
+*/
+
+@media (max-width: 980px) {
+  .about__grid { grid-template-columns: 1fr; }
+  .skills { grid-template-columns: 1fr; }
+  .contact { grid-template-columns: 1fr; }
+  .projects__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .modal__body { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .section { padding: 70px 14px; }
+  .site-header__nav { display: none; }
+  .projects__grid { grid-template-columns: 1fr; }
+  .hero__meta { grid-template-columns: 1fr; }
+  .scroll-indicator { display: none; }
+  .audio-visualizer { display: none; }
+
+  .projects__filterbar { justify-content: center; }
+}
+
